@@ -5,17 +5,15 @@
 from typing import List, Optional
 from fastapi import FastAPI, HTTPException
 import traceback
+from mangum import Mangum
 from pydantic import BaseModel
 from contextlib import asynccontextmanager
 import torch
-import uvicorn
 from recommend_system.components.mmneumf import MultiModalNeuMF
 from recommend_system.src.download_model import download_latest_model
 from recommend_system.api.recommend_timeline import (
-    get_post_index_from_uuid,
     get_user_id,
     get_candidate_posts,
-    get_uuid_from_post_id,
     get_recommended_timeline,
 )
 from recommend_system.utils.config import new_user_query, existing_user_query
@@ -24,7 +22,7 @@ from recommend_system.utils.config import new_user_query, existing_user_query
 device = "cuda" if torch.cuda.is_available() else "cpu"
 config = None
 model = None
-MODEL_PATH = "recommend_system/models/latest.model"
+MODEL_PATH = "/tmp/latest.model"
 
 
 # ----------------------------------
@@ -167,8 +165,12 @@ def recommend_timeline(request: TimelineRequest):
                     bio=rc["bio"],
                     icon_image_key=rc.get("icon_image_key"),
                 ),
-                comments=rc.get("comments", []) if rc.get("comments", []) is not None else [],  # コメント埋め込み済み前提
-                likes=rc.get("likes", []) if rc.get("likes", []) is not None else [],  # いいね埋め込み済み前提
+                comments=rc.get("comments", [])
+                if rc.get("comments", []) is not None
+                else [],  # コメント埋め込み済み前提
+                likes=rc.get("likes", [])
+                if rc.get("likes", []) is not None
+                else [],  # いいね埋め込み済み前提
                 daily_task=rc.get("daily_task"),
             )
             for rc in recommended
@@ -179,9 +181,4 @@ def recommend_timeline(request: TimelineRequest):
         raise HTTPException(status_code=500, detail=str(e))
 
 
-if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8000)
-
-# ---------------------- 起動(開発用) ---------------------- #
-# poetry run uvicorn recommend_system.api.main:app --reload
-# -------------------------------------------------------- #
+handler = Mangum(app)
