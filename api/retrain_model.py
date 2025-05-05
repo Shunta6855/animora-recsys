@@ -5,10 +5,10 @@
 import os
 from fastapi import FastAPI, HTTPException
 import traceback
-import subprocess
 import uvicorn
 from huggingface_hub import login
 from dotenv import load_dotenv, find_dotenv
+from recommend_system.batch.train import retrain_model
 
 _ = load_dotenv(find_dotenv())
 
@@ -22,8 +22,6 @@ if hf_token:
 else:
     print("❌ Hugging Face Hub token not found. Please set HUGGINGFACE_TOKEN")
 
-# ※ログインが完了したあとにインポート
-from common.src.multimodal_feature_extractor import update_post_features
 
 
 # ----------------------------------
@@ -38,14 +36,10 @@ app = FastAPI()
 @app.get("/")
 def embed_vector_and_retrain_model():
     """
-    埋め込みベクトルの計算を行い、モデルを再学習するエンドポイント
+    モデルの再学習を行うエンドポイント
     """
     try:
-        # 埋め込みベクトルの計算
-        update_post_features()
-
-        # train_prod.pyを実行
-        subprocess.run(["python", "recommend_system/src/train_prod.py"], check=True)
+        retrain_model()
         print("Model retraining completed successfully.")
     except Exception as e:
         traceback.print_exc()
