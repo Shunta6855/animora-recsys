@@ -42,7 +42,7 @@ $$\text{Score} = \alpha \times (\text{popularity score}) + (1-\alpha) \times (\t
 
 - **Model Architecture**
 <p align="center">
-  <img src="images/neucf_architecture.png" alt="NeuCF Architecture" width="80%"/>
+  <img src="images/neucf_architecture.png" alt="NeuCF Architecture" width="90%"/>
 </p>
 
 
