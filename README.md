@@ -1,4 +1,7 @@
 # Animora Recommendation System
+<p align="center">
+  <img src="images/animora-homescreen.png" alt="Animora Home Screen" width="50%"/>
+</p>
 
 This repository contains the recommendation system developed for  the pet-photo SNS **Animora**. \
 This app helps pet owners learn proper care through daily tasks while forming a community with other owners.
@@ -34,10 +37,13 @@ $$\text{Score} = \alpha \times (\text{popularity score}) + (1-\alpha) \times (\t
 
 - Handles personalized ranking per user based on learned latent factors
 
-> This implementatin refers to the following paper: \
+- This implementation refers to the following paper: 
 > Xiangnan He, Lizi Liao, Hanwang Zhang, Liqiang Nie, Xia Hu and Tat-Seng Chua (2017). [Neural Collaborative Filtering.](http://dl.acm.org/citation.cfm?id=3052569) In Proceedings of WWW '17, Perth, Australia, April 03-07, 2017.
 
 - **Model Architecture**
+<p align="center">
+  <img src="images/neucf_architecture.png" alt="NeuCF Architecture" />
+</p>
 
 
 This architecture balances **accuracy** and **latency**, allowing the system to evolve as user data grows.
